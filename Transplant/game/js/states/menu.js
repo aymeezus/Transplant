@@ -1,21 +1,35 @@
+//Global Variables
+var title; //title logo and background
+var playButton; //the play button
+
 var menuState = {
-	preload: function(){
-		console.log('Menu: preload');
-		//preload anything else needed
-	},
 	create: function(){
 		console.log('Menu: create');
-		var gameName = this.add.text(300, 150, 'Transplant', {font: '30px Courier', fill: '#800080'}); //Game title
+    
+		title = game.add.tileSprite(0,0,1200,800, 'title');
+		playButton = game.add.button(75, 350, 'playButton', this.actionOnClick, this, 1, 1);
 
-		//Filler state changer
-		var startLabel = this.add.text(225, 300, 'Press Space to Start', {font: '30px Courier', fill: '#FFFFFF'}); //Text in the middle of the screen to prompt the player to start the game
-		this.spaceBar = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); //use of space bar on keyboard
-		this.input.keyboard.addKeyCapture(Phaser.Keyboard.SPACEBAR); //enable use of keyboard
+		playButton.onInputOver.add(this.over, this);
+		playButton.onInputOut.add(this.out, this);
+		//Make transparent
+		title.alpha = 0;
+		playButton.alpha = 0;
+
+		//Adding fade effects
+		game.add.tween(title).to( {alpha: 1}, 2000, Phaser.Easing.Linear.None, true, 0, 0, false); //(sprite).to({variable change}, speed between changes, style, loop maybe, ms delay, # of iterations, ???)
+		game.add.tween(playButton).to( {alpha: 0.5}, 2000, Phaser.Easing.Linear.None, true, 0, 0, false); //initial fade for playButton to coincide with title
 	},
-
-	update: function() {
-		if(this.spaceBar.isDown) { //check if space bar was pressed
-			this.state.start('play'); //Switch to the next state
-		}
+	over: function(){
+		//when hover over
+		playButton.alpha = 1;
+	},
+	out: function(){
+		//when not hovering over
+		playButton.alpha = 0.5;
+	},
+	actionOnClick: function() { //when player clicks on playButton
+		title.destroy();
+		playButton.destroy();
+		this.state.start('controls'); //Switch to the next state
 	}
 };
